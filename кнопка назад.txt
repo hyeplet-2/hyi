@@ -1,0 +1,6 @@
+public Form1()
+{
+    InitializeComponent();
+    buttonBack.Click += buttonBack_Click;
+    // Другой код конструктора
+}

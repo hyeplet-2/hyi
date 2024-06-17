@@ -1,0 +1,58 @@
+using System;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+
+namespace RegistrationForm
+{
+    public partial class Form1 : Form
+    {
+        private SqlConnection connection;
+        private string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=YourDatabaseName;Integrated Security=True";
+
+        public Form1()
+        {
+            InitializeComponent();
+            connection = new SqlConnection(connectionString);
+        }
+
+        private void buttonRegister_Click(object sender, EventArgs e)
+        {
+            string username = textBoxUsername.Text;
+            string password = textBoxPassword.Text;
+            string email = textBoxEmail.Text;
+
+            string query = "INSERT INTO Users (Username, Password, Email) VALUES (@Username, @Password, @Email)";
+
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@Username", username);
+                command.Parameters.AddWithValue("@Password", password);
+                command.Parameters.AddWithValue("@Email", email);
+
+                try
+                {
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Регистрация прошла успешно!");
+                        // Здесь можно добавить код для перехода на форму авторизации
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ошибка при регистрации.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Ошибка при подключении к базе данных: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+    }
+}
